@@ -1,0 +1,159 @@
+<Window
+    x:Class="Finance_App.Views.MainWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:views="using:FinanceDashboard.Views"
+    xmlns:vm="using:FinanceDashboard.ViewModels"
+    Title="{Binding PageTitle}"
+    Width="1400"
+    Height="900"
+    MinWidth="1000"
+    MinHeight="600"
+    x:DataType="vm:MainWindowViewModel"
+    Icon="/Assets/icon.ico">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel />
+    </Design.DataContext>
+
+    <Window.Styles>
+        <!--  Custom styles for modern look  -->
+        <Style Selector="Border.nav-item">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Padding" Value="15,10" />
+            <Setter Property="Margin" Value="0,2" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+
+        <Style Selector="Border.nav-item:pointerover">
+            <Setter Property="Background" Value="#20FFFFFF" />
+        </Style>
+
+        <Style Selector="TextBlock.nav-title">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontWeight" Value="Medium" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+
+        <Style Selector="TextBlock.nav-icon">
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="Margin" Value="0,0,12,0" />
+        </Style>
+    </Window.Styles>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="280" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!--  Sidebar Navigation  -->
+        <Border
+            Grid.Column="0"
+            Background="#2C3E50"
+            BorderBrush="#34495E"
+            BorderThickness="0,0,1,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!--  Header  -->
+                <StackPanel Grid.Row="0" Margin="20,30,20,20">
+                    <TextBlock
+                        FontSize="24"
+                        FontWeight="Bold"
+                        Foreground="White"
+                        Text="💰 Finance Dashboard"
+                        TextAlignment="Center" />
+                    <TextBlock
+                        Margin="0,5,0,0"
+                        FontSize="12"
+                        Foreground="#95A5A6"
+                        Text="Track. Analyze. Optimize."
+                        TextAlignment="Center" />
+                </StackPanel>
+
+                <!--  Navigation Items  -->
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <ItemsControl Margin="10,0" Items="{Binding NavigationItems}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Classes="nav-item">
+                                    <Border.GestureRecognizers>
+                                        <TappedGestureRecognizer Command="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).NavigateCommand}" CommandParameter="{Binding Title}" />
+                                    </Border.GestureRecognizers>
+
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Classes="nav-icon" Text="{Binding Icon}" />
+                                        <StackPanel>
+                                            <TextBlock Classes="nav-title" Text="{Binding Title}" />
+                                            <TextBlock
+                                                FontSize="11"
+                                                Foreground="#95A5A6"
+                                                Text="{Binding Description}"
+                                                TextWrapping="Wrap" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+
+                <!--  Footer  -->
+                <StackPanel
+                    Grid.Row="2"
+                    Margin="20"
+                    HorizontalAlignment="Center">
+                    <TextBlock
+                        FontSize="11"
+                        Foreground="#7F8C8D"
+                        Text="Version 1.0.0"
+                        TextAlignment="Center" />
+                    <TextBlock
+                        Margin="0,5,0,0"
+                        FontSize="10"
+                        Foreground="#7F8C8D"
+                        Text="© 2025 Your Name"
+                        TextAlignment="Center" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!--  Main Content Area  -->
+        <Border Grid.Column="1" Background="#ECF0F1">
+            <ContentControl Content="{Binding CurrentViewModel}">
+                <ContentControl.ContentTemplate>
+                    <DataTemplate>
+                        <!--  Content template selector based on ViewModel type  -->
+                        <Panel>
+                            <!--  Dashboard View  -->
+                            <views:DashboardView
+                                x:DataType="vm:DashboardViewModel"
+                                DataContext="{Binding}"
+                                IsVisible="{Binding $self, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+                            <!--  Data Entry View  -->
+                            <views:DataEntryView
+                                x:DataType="vm:DataEntryViewModel"
+                                DataContext="{Binding}"
+                                IsVisible="{Binding $self, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+                            <!--  Expense Tracking View  -->
+                            <views:ExpenseTrackingView
+                                x:DataType="vm:ExpenseTrackingViewModel"
+                                DataContext="{Binding}"
+                                IsVisible="{Binding $self, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+                            <!--  Other views...  -->
+                        </Panel>
+                    </DataTemplate>
+                </ContentControl.ContentTemplate>
+            </ContentControl>
+        </Border>
+    </Grid>
+</Window>
