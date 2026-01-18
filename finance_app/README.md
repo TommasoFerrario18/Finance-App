@@ -1,16 +1,73 @@
-# finance_app
+# Net Worth Tracker
 
-A new Flutter project.
+## Overview
+A complete Flutter application scaffolding with MVVM architecture, repository pattern, and modern navigation system for tracking net worth, investments, and expenses.
 
-## Getting Started
+## What's Included
 
-This project is a starting point for a Flutter application.
+### ✅ Navigation System
+Bottom navigation with 5 tabs:
+1. **Portfolio** - View investments and assets
+2. **Add Asset** - Record new investments
+3. **Dashboard** - Net worth overview (home screen)
+4. **Expenses** - Track and analyze spending
+5. **Add Expense** - Record new expenses
 
-A few resources to get you started if this is your first Flutter project:
+## Architecture
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+This project follows **MVVM (Model-View-ViewModel)** pattern with **Repository** pattern for data management.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Project Structure
+
+```
+lib/
+├── core/
+│   ├── base/
+│   │   └── base_viewmodel.dart          # Base class for all ViewModels
+│   ├── di/
+│   │   └── service_locator.dart         # Dependency injection setup
+│   ├── navigation/
+│   │   └── app_router.dart              # Navigation configuration
+│   └── widgets/
+│       └── feature_scaffold.dart        # Reusable scaffold widget
+├── features/
+│   ├── main_navigation/
+│   │   └── presentation/
+│   │       └── views/
+│   │           └── main_navigation_view.dart  # Bottom navigation
+│   ├── dashboard/
+│   │   └── presentation/
+│   │       ├── viewmodels/
+│   │       │   └── dashboard_viewmodel.dart
+│   │       └── views/
+│   │           └── dashboard_view.dart
+│   ├── portfolio/
+│   │   ├── data/
+│   │   │   └── repositories/
+│   │   │       └── investment_repository_impl.dart
+│   │   ├── domain/
+│   │   │   └── repositories/
+│   │   │       └── investment_repository.dart
+│   │   └── presentation/
+│   │       ├── viewmodels/
+│   │       │   ├── portfolio_viewmodel.dart
+│   │       │   └── add_investment_viewmodel.dart
+│   │       └── views/
+│   │           ├── portfolio_view.dart
+│   │           └── add_investment_view.dart
+│   └── expenses/
+│       ├── data/
+│       │   └── repositories/
+│       │       └── expense_repository_impl.dart
+│       ├── domain/
+│       │   └── repositories/
+│       │       └── expense_repository.dart
+│       └── presentation/
+│           ├── viewmodels/
+│           │   ├── expenses_viewmodel.dart
+│           │   └── add_expense_viewmodel.dart
+│           └── views/
+│               ├── expenses_view.dart
+│               └── add_expense_view.dart
+└── main.dart
+```
