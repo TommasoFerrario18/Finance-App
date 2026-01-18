@@ -1,3 +1,5 @@
+import 'package:finance_app/core/database/app_database.dart';
+import 'package:finance_app/core/database/database_seeder.dart';
 import 'package:finance_app/core/navigation/app_router.dart';
 import 'package:finance_app/features/dashboard/presentation/viewmodels/dashboard_viewmodel.dart';
 import 'package:finance_app/features/expenses/data/repositories/expense_repository_impl.dart';
@@ -12,13 +14,34 @@ import 'package:get_it/get_it.dart';
 
 final getIt = GetIt.instance;
 
-Future<void> setupServiceLocator() async {
+Future<void> setupServiceLocator({bool seedDatabase = false}) async {
+  // ============================================================================
+  // Database (Singleton)
+  // ============================================================================
+  final database = AppDatabase();
+  getIt.registerSingleton<AppDatabase>(database);
+
+  // ============================================================================
+  // Seed database if requested (development only)
+  // ============================================================================
+  if (seedDatabase) {
+    final seeder = DatabaseSeeder(database);
+
+    // Only seed if database is empty
+    final hasData = await seeder.hasData();
+    if (!hasData) {
+      print('Seeding database with sample data...');
+      await seeder.seedAll();
+      print('Database seeded successfully!');
+    }
+  }
+
   // Core - Register as singleton and initialize immediately
   getIt.registerSingleton<AppRouter>(AppRouter());
 
   // Repositories
   getIt.registerLazySingleton<InvestmentRepository>(
-    () => InvestmentRepositoryImpl(),
+    () => InvestmentRepositoryImpl(database: getIt<AppDatabase>()),
   );
 
   getIt.registerLazySingleton<ExpenseRepository>(() => ExpenseRepositoryImpl());
@@ -46,4 +69,11 @@ Future<void> setupServiceLocator() async {
   getIt.registerFactory<AddExpenseViewModel>(
     () => AddExpenseViewModel(repository: getIt<ExpenseRepository>()),
   );
+}
+
+/// Cleanup resources (call this when app is closing)
+Future<void> disposeServiceLocator() async {
+  final database = getIt<AppDatabase>();
+  await database.close();
+  await getIt.reset();
 }

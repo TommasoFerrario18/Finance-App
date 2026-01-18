@@ -6,7 +6,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize dependency injection
-  await setupServiceLocator();
+  await setupServiceLocator(seedDatabase: true);
 
   runApp(const NetWorthTrackerApp());
 }
