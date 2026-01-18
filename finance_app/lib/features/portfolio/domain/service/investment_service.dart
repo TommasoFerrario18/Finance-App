@@ -3,18 +3,13 @@ import 'package:finance_app/core/database/app_database.dart';
 import 'package:finance_app/features/portfolio/domain/models/portfolio_data_models.dart';
 import 'package:finance_app/features/portfolio/domain/repositories/investment_repository.dart';
 
-class InvestmentRepositoryImpl implements InvestmentRepository {
+class InvestmentService implements InvestmentRepository {
   final AppDatabase _database;
 
-  InvestmentRepositoryImpl({required AppDatabase database})
-    : _database = database;
+  InvestmentService({required AppDatabase database}) : _database = database;
 
   @override
-  Future<void> initialize() async {
-    // Database is already initialized via Drift
-    // This method can be used for any additional setup if needed
-    await Future.delayed(const Duration(milliseconds: 10));
-  }
+  Future<void> initialize() async {}
 
   @override
   Future<PortfolioData> getPortfolioData() async {

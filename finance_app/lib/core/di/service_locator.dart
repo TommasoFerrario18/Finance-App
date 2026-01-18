@@ -6,7 +6,7 @@ import 'package:finance_app/features/expenses/data/repositories/expense_reposito
 import 'package:finance_app/features/expenses/domain/repositories/expense_repository.dart';
 import 'package:finance_app/features/expenses/presentation/viewmodels/add_expense_viewmodel.dart';
 import 'package:finance_app/features/expenses/presentation/viewmodels/expenses_viewmodel.dart';
-import 'package:finance_app/features/portfolio/data/repositories/investment_repository_impl.dart';
+import 'package:finance_app/features/portfolio/domain/service/investment_service.dart';
 import 'package:finance_app/features/portfolio/domain/repositories/investment_repository.dart';
 import 'package:finance_app/features/portfolio/presentation/viewmodels/add_investment_viewmodel.dart';
 import 'package:finance_app/features/portfolio/presentation/viewmodels/portfolio_viewmodel.dart';
@@ -30,9 +30,7 @@ Future<void> setupServiceLocator({bool seedDatabase = false}) async {
     // Only seed if database is empty
     final hasData = await seeder.hasData();
     if (!hasData) {
-      print('Seeding database with sample data...');
       await seeder.seedAll();
-      print('Database seeded successfully!');
     }
   }
 
@@ -41,7 +39,7 @@ Future<void> setupServiceLocator({bool seedDatabase = false}) async {
 
   // Repositories
   getIt.registerLazySingleton<InvestmentRepository>(
-    () => InvestmentRepositoryImpl(database: getIt<AppDatabase>()),
+    () => InvestmentService(database: getIt<AppDatabase>()),
   );
 
   getIt.registerLazySingleton<ExpenseRepository>(() => ExpenseRepositoryImpl());
