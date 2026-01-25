@@ -23,21 +23,17 @@ class PortfolioViewModel extends BaseViewModel {
       _portfolioData?.assetAllocations ?? [];
   double get currentNetWorth => _portfolioData?.currentNetWorth ?? 0.0;
 
+  @override
+  Future<void> init() => loadPortfolio();
+
   /// Load initial portfolio data
   Future<void> loadPortfolio() async {
-    setLoading(true);
-    clearError();
-
-    try {
+    await executeAsync(() async {
       await repository.initialize();
       _portfolioData = await repository.getPortfolioData();
-      _applyTimeRangeFilter();
+      await _applyTimeRangeFilter();
       notifyListeners();
-    } catch (e) {
-      setError('Failed to load portfolio: ${e.toString()}');
-    } finally {
-      setLoading(false);
-    }
+    });
   }
 
   /// Change the selected time range and filter data
@@ -76,15 +72,11 @@ class PortfolioViewModel extends BaseViewModel {
 
   /// Refresh portfolio data
   Future<void> refresh() async {
-    clearError();
-
-    try {
+    await executeAsync(() async {
       _portfolioData = await repository.getPortfolioData();
       await _applyTimeRangeFilter();
       notifyListeners();
-    } catch (e) {
-      setError('Failed to refresh portfolio: ${e.toString()}');
-    }
+    }, showLoading: false);
   }
 
   /// Get the percentage change for the selected time period

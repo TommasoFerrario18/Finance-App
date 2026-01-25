@@ -6,17 +6,10 @@ class ExpensesViewModel extends BaseViewModel {
 
   ExpensesViewModel({required this.repository});
 
-  Future<void> loadExpenses() async {
-    setLoading(true);
-    clearError();
+  @override
+  Future<void> init() => loadExpenses();
 
-    try {
-      await repository.initialize();
-      // Placeholder for loading expenses data
-    } catch (e) {
-      setError('Failed to load expenses: ${e.toString()}');
-    } finally {
-      setLoading(false);
-    }
+  Future<void> loadExpenses() async {
+    await executeAsync(() => repository.initialize());
   }
 }

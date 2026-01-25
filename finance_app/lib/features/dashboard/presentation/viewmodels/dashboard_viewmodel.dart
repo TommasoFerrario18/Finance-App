@@ -11,17 +11,15 @@ class DashboardViewModel extends BaseViewModel {
     required this.expenseRepository,
   });
 
-  Future<void> loadDashboardData() async {
-    setLoading(true);
-    clearError();
+  @override
+  Future<void> init() => loadDashboardData();
 
-    try {
-      // Placeholder for loading logic
-      await Future.delayed(const Duration(milliseconds: 500));
-    } catch (e) {
-      setError('Failed to load dashboard data: ${e.toString()}');
-    } finally {
-      setLoading(false);
-    }
+  Future<void> loadDashboardData() async {
+    await executeAsync(
+      () async {
+        // Placeholder for loading logic
+        await Future.delayed(const Duration(milliseconds: 500));
+      },
+    );
   }
 }
