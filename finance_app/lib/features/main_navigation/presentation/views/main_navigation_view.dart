@@ -5,9 +5,33 @@ class MainNavigationView extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
 
   const MainNavigationView({super.key, required this.navigationShell});
+
+  String _getTabTitle(int index) {
+    const titles = ['Portfolio', 'Add Asset', 'Dashboard', 'Expenses', 'Add Expense'];
+    return titles[index];
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Image.asset(
+            'assets/logo.png',
+            fit: BoxFit.contain,
+            cacheHeight: 48,
+            cacheWidth: 48,
+          ),
+        ),
+        title: Text(_getTabTitle(navigationShell.currentIndex)),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () => context.push('/settings'),
+          ),
+        ],
+      ),
       body: navigationShell,
       bottomNavigationBar: NavigationBar(
         selectedIndex: navigationShell.currentIndex,

@@ -41,9 +41,9 @@ class PortfolioViewModel extends BaseViewModel {
     if (_selectedTimeRange == timeRange) return;
 
     _selectedTimeRange = timeRange;
-    notifyListeners();
-
     await _applyTimeRangeFilter();
+    // Single notification after filtering is complete
+    notifyListeners();
   }
 
   /// Change the selected dashboard tab
@@ -67,7 +67,7 @@ class PortfolioViewModel extends BaseViewModel {
         .where((point) => point.date.isAfter(startDate))
         .toList();
 
-    notifyListeners();
+    // Don't notify here - let the caller handle notification
   }
 
   /// Refresh portfolio data
@@ -75,6 +75,7 @@ class PortfolioViewModel extends BaseViewModel {
     await executeAsync(() async {
       _portfolioData = await repository.getPortfolioData();
       await _applyTimeRangeFilter();
+      // Single notification after all updates
       notifyListeners();
     }, showLoading: false);
   }

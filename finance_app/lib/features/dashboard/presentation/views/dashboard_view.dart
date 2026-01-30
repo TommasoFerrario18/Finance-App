@@ -7,7 +7,7 @@ class DashboardView extends BaseFeatureView<DashboardViewModel> {
   const DashboardView({super.key});
 
   @override
-  String get title => 'Dashboard';
+  String get title => '';
 
   @override
   DashboardViewModel createViewModel() => getIt<DashboardViewModel>();

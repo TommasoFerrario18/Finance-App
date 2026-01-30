@@ -8,7 +8,7 @@ class PortfolioView extends BaseFeatureView<PortfolioViewModel> {
   const PortfolioView({super.key});
 
   @override
-  String get title => 'Portfolio';
+  String get title => '';
 
   @override
   PortfolioViewModel createViewModel() => getIt<PortfolioViewModel>();

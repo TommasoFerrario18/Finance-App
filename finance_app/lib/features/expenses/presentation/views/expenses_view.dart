@@ -7,7 +7,7 @@ class ExpensesView extends BaseFeatureView<ExpensesViewModel> {
   const ExpensesView({super.key});
 
   @override
-  String get title => 'Expenses';
+  String get title => '';
 
   @override
   ExpensesViewModel createViewModel() => getIt<ExpensesViewModel>();

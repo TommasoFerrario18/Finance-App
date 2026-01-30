@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 /// 1. Implement [buildTitle] to return the screen title
 /// 2. Implement [createViewModel] to provide the ViewModel instance
 /// 3. Implement [buildContent] to build the actual content widget
-abstract class BaseFeatureView<T extends BaseViewModel> extends StatelessWidget {
+abstract class BaseFeatureView<T extends BaseViewModel> extends StatefulWidget {
   const BaseFeatureView({super.key});
 
   /// Return the title for this feature screen
@@ -31,21 +31,42 @@ abstract class BaseFeatureView<T extends BaseViewModel> extends StatelessWidget 
   }
 
   @override
+  State<BaseFeatureView<T>> createState() => _BaseFeatureViewState<T>();
+}
+
+class _BaseFeatureViewState<T extends BaseViewModel>
+    extends State<BaseFeatureView<T>> {
+  late T _viewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    _viewModel = widget.createViewModel();
+    _viewModel.init();
+  }
+
+  @override
+  void dispose() {
+    _viewModel.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => createViewModel()..init(),
+    return ChangeNotifierProvider<T>.value(
+      value: _viewModel,
       child: Consumer<T>(
         builder: (context, viewModel, _) {
           return FeatureScaffold(
-            title: title,
+            title: widget.title,
             child: LoadingErrorWidget(
               isLoading: viewModel.isLoading,
               hasError: viewModel.hasError,
               errorMessage: viewModel.errorMessage,
               onRetry: viewModel.hasError
-                  ? () => onRetry(viewModel)
+                  ? () => widget.onRetry(viewModel)
                   : null,
-              child: buildContent(context, viewModel),
+              child: widget.buildContent(context, viewModel),
             ),
           );
         },
