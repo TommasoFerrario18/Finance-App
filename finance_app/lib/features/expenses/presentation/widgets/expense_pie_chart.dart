@@ -5,10 +5,7 @@ import 'package:finance_app/features/expenses/domain/models/expense_models.dart'
 class ExpensePieChart extends StatelessWidget {
   final List<ExpenseSummary> categorySummaries;
 
-  const ExpensePieChart({
-    super.key,
-    required this.categorySummaries,
-  });
+  const ExpensePieChart({super.key, required this.categorySummaries});
 
   Color _getCategoryColor(ExpenseCategory category) {
     return switch (category) {
@@ -67,53 +64,51 @@ class ExpensePieChart extends StatelessWidget {
           ),
         ),
         // Legend
-        Expanded(
-          child: ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            itemCount: categorySummaries.length,
-            itemBuilder: (context, index) {
-              final summary = categorySummaries[index];
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 12,
-                      height: 12,
-                      decoration: BoxDecoration(
-                        color: _getCategoryColor(summary.category),
-                        shape: BoxShape.circle,
-                      ),
+        ListView.builder(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          shrinkWrap: true, // Tells the list to wrap its content height
+          physics: const NeverScrollableScrollPhysics(), // Disable scrolling
+          itemCount: categorySummaries.length,
+          itemBuilder: (context, index) {
+            final summary = categorySummaries[index];
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Row(
+                children: [
+                  Container(
+                    width: 12,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: _getCategoryColor(summary.category),
+                      shape: BoxShape.circle,
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${summary.category.emoji} ${summary.category.label}',
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                          Text(
-                            '\$${summary.totalAmount.toStringAsFixed(2)}',
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-                        ],
+                  ),
+                  const SizedBox(width: 12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${summary.category.emoji} ${summary.category.label}',
+                        style: Theme.of(context).textTheme.bodyMedium,
                       ),
-                    ),
-                    Text(
-                      '${summary.percentage.toStringAsFixed(1)}%',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
+                      Text(
+                        '\$${summary.totalAmount.toStringAsFixed(2)}',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                       ),
+                    ],
+                  ),
+                  Text(
+                    '${summary.percentage.toStringAsFixed(1)}%',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
                     ),
-                  ],
-                ),
-              );
-            },
-          ),
+                  ),
+                ],
+              ),
+            );
+          },
         ),
       ],
     );

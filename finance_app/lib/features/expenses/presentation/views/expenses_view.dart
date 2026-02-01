@@ -17,22 +17,55 @@ class ExpensesView extends BaseFeatureView<ExpensesViewModel> {
   @override
   Widget buildContent(BuildContext context, ExpensesViewModel viewModel) {
     // Show dashboard with data
-    if (viewModel.monthlyData != null && viewModel.categorySummaries.isNotEmpty) {
+    if (viewModel.monthlyData != null &&
+        viewModel.categorySummaries.isNotEmpty) {
       return RefreshIndicator(
         onRefresh: viewModel.refresh,
-        child: Column(
+        child: ListView(
           children: [
+            // Title Section
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Expense Overview',
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Track your spending and savings',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ),
             // Summary Card
             ExpenseSummaryCard(
               totalExpenses: viewModel.monthlyData!.totalExpenses,
+              totalIncome: viewModel.monthlyData!.totalIncome,
               month: viewModel.monthlyData!.month,
             ),
-            // Pie Chart
-            Expanded(
-              child: ExpensePieChart(
-                categorySummaries: viewModel.categorySummaries,
+            // Chart Title
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Breakdown by Category',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                ),
               ),
             ),
+            // Pie Chart - Expanded to fill remaining space
+            ExpensePieChart(categorySummaries: viewModel.categorySummaries),
           ],
         ),
       );

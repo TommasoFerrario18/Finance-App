@@ -103,23 +103,40 @@ class ExpenseSummary extends Equatable {
 class MonthlyExpenseData extends Equatable {
   final DateTime month;
   final double totalExpenses;
+  final double totalIncome;
   final List<ExpenseSummary> categorySummaries;
   final List<Expense> expenses;
 
   const MonthlyExpenseData({
     required this.month,
     required this.totalExpenses,
+    required this.totalIncome,
     required this.categorySummaries,
     required this.expenses,
   });
 
+  /// Get the net income (income - expenses)
+  double get netIncome => totalIncome - totalExpenses;
+
+  /// Get the savings percentage
+  double get savingsPercentage {
+    if (totalIncome == 0) return 0.0;
+    return (netIncome / totalIncome) * 100;
+  }
+
   @override
-  List<Object?> get props =>
-      [month, totalExpenses, categorySummaries, expenses];
+  List<Object?> get props => [
+    month,
+    totalExpenses,
+    totalIncome,
+    categorySummaries,
+    expenses,
+  ];
 
   Map<String, dynamic> toJson() => {
     'month': month.toIso8601String(),
     'totalExpenses': totalExpenses,
+    'totalIncome': totalIncome,
     'categorySummaries': categorySummaries.map((e) => e.toJson()).toList(),
     'expenses': expenses.map((e) => e.toJson()).toList(),
   };
@@ -128,6 +145,7 @@ class MonthlyExpenseData extends Equatable {
     return MonthlyExpenseData(
       month: DateTime.parse(json['month'] as String),
       totalExpenses: (json['totalExpenses'] as num).toDouble(),
+      totalIncome: (json['totalIncome'] as num).toDouble(),
       categorySummaries: (json['categorySummaries'] as List)
           .map((e) => ExpenseSummary.fromJson(e as Map<String, dynamic>))
           .toList(),

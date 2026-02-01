@@ -187,6 +187,11 @@ class ExpenseMockData {
     );
   }
 
+  /// Get total income for current month
+  static double getTotalIncomeForCurrentMonth() {
+    return 5500.0; // Mock monthly income
+  }
+
   /// Get category summaries for current month
   static List<ExpenseSummary> getCategorySummariesForCurrentMonth() {
     final expenses = getExpensesForCurrentMonth();
@@ -219,11 +224,13 @@ class ExpenseMockData {
   static MonthlyExpenseData getMonthlyExpenseDataForCurrentMonth() {
     final expenses = getExpensesForCurrentMonth();
     final total = getTotalExpensesForCurrentMonth();
+    final income = getTotalIncomeForCurrentMonth();
     final summaries = getCategorySummariesForCurrentMonth();
 
     return MonthlyExpenseData(
       month: currentMonth,
       totalExpenses: total,
+      totalIncome: income,
       categorySummaries: summaries,
       expenses: expenses,
     );
