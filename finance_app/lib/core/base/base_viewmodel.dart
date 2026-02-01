@@ -5,28 +5,43 @@ abstract class BaseViewModel extends ChangeNotifier {
   String? _errorMessage;
 
   bool get isLoading => _isLoading;
+  bool get hasError => _errorMessage != null;
   String? get errorMessage => _errorMessage;
 
-  @protected
-  void setLoading(bool value) {
-    _isLoading = value;
+  /// Initialize the ViewModel. Override in subclasses to perform initialization logic.
+  Future<void> init() async {}
+
+  /// Set the loading state and notify listeners
+  void setLoading(bool loading) {
+    _isLoading = loading;
     notifyListeners();
   }
 
-  @protected
-  void setError(String? message) {
-    _errorMessage = message;
+  /// Set an error message and notify listeners
+  void setError(String error) {
+    _errorMessage = error;
     notifyListeners();
   }
 
-  @protected
+  /// Clear the current error
   void clearError() {
     _errorMessage = null;
-    notifyListeners();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
+  Future<T> executeAsync<T>(
+    Future<T> Function() operation, {
+    bool showLoading = true,
+  }) async {
+    if (showLoading) setLoading(true);
+    clearError();
+
+    try {
+      return await operation();
+    } catch (e) {
+      setError(e.toString());
+      rethrow;
+    } finally {
+      if (showLoading) setLoading(false);
+    }
   }
 }

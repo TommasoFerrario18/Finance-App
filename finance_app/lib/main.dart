@@ -6,9 +6,21 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize dependency injection
-  await setupServiceLocator();
+  await setupServiceLocator(seedDatabase: true);
 
   runApp(const NetWorthTrackerApp());
+
+  // Cleanup resources on app exit
+  WidgetsBinding.instance.addObserver(_AppLifecycleObserver());
+}
+
+class _AppLifecycleObserver extends WidgetsBindingObserver {
+  @override
+  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (state == AppLifecycleState.detached) {
+      await disposeServiceLocator();
+    }
+  }
 }
 
 class NetWorthTrackerApp extends StatelessWidget {

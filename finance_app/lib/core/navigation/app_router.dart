@@ -2,6 +2,7 @@ import 'package:finance_app/features/dashboard/presentation/views/dashboard_view
 import 'package:finance_app/features/expenses/presentation/views/add_expense_view.dart';
 import 'package:finance_app/features/expenses/presentation/views/expenses_view.dart';
 import 'package:finance_app/features/main_navigation/presentation/views/main_navigation_view.dart';
+import 'package:finance_app/features/main_navigation/presentation/views/settings_view.dart';
 import 'package:finance_app/features/portfolio/presentation/views/add_investment_view.dart';
 import 'package:finance_app/features/portfolio/presentation/views/portfolio_view.dart';
 import 'package:go_router/go_router.dart';
@@ -12,6 +13,7 @@ class AppRouter {
   static const String addInvestment = '/add-investment';
   static const String expenses = '/expenses';
   static const String addExpense = '/add-expense';
+  static const String settings = '/settings';
 
   late final GoRouter router;
 
@@ -75,6 +77,11 @@ class AppRouter {
               ],
             ),
           ],
+        ),
+        GoRoute(
+          path: settings,
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: SettingsView()),
         ),
       ],
     );
