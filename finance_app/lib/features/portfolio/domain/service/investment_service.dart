@@ -13,6 +13,14 @@ class InvestmentService implements InvestmentRepository {
 
   @override
   Future<PortfolioData> getPortfolioData() async {
+    // Check if database has data, if not use mock data
+    final hasDbData = await _hasAssets();
+    
+    if (!hasDbData) {
+      // Return mock data
+      return _generateMockPortfolioData();
+    }
+
     final netWorthHistory = await getNetWorthHistory();
     final assetAllocations = await getAssetAllocations();
     final currentNetWorth = await getCurrentNetWorth();
@@ -22,6 +30,39 @@ class InvestmentService implements InvestmentRepository {
       assetAllocations: assetAllocations,
       currentNetWorth: currentNetWorth,
       lastUpdated: DateTime.now(),
+    );
+  }
+
+  /// Generate mock portfolio data
+  PortfolioData _generateMockPortfolioData() {
+    final now = DateTime.now();
+    
+    // Generate 12 months of net worth history
+    final netWorthHistory = <NetWorthDataPoint>[];
+    for (int i = 11; i >= 0; i--) {
+      final date = DateTime(now.year, now.month - i, 1);
+      final baseValue = 100000.0;
+      final growthFactor = (12 - i) * 500.0;
+      final variance = (i % 3) * 1000.0;
+      final value = baseValue + growthFactor + variance;
+      
+      netWorthHistory.add(NetWorthDataPoint(date: date, value: value));
+    }
+
+    // Asset allocations for mock data
+    final assetAllocations = <AssetAllocation>[
+      AssetAllocation(assetType: 'Stocks', value: 85000, percentage: 42.5),
+      AssetAllocation(assetType: 'Bonds', value: 50000, percentage: 25.0),
+      AssetAllocation(assetType: 'Real Estate', value: 33750, percentage: 16.875),
+      AssetAllocation(assetType: 'Crypto', value: 21250, percentage: 10.625),
+      AssetAllocation(assetType: 'Cash', value: 10000, percentage: 5.0),
+    ];
+
+    return PortfolioData(
+      netWorthHistory: netWorthHistory,
+      assetAllocations: assetAllocations,
+      currentNetWorth: 200000,
+      lastUpdated: now,
     );
   }
 
@@ -165,6 +206,12 @@ class InvestmentService implements InvestmentRepository {
   // ============================================================================
   // HELPER METHODS
   // ============================================================================
+
+  /// Check if database has any assets
+  Future<bool> _hasAssets() async {
+    final count = await _database.assets.count().getSingle();
+    return count > 0;
+  }
 
   /// Get the position (quantity) of an asset at a specific date
   Future<double> _getPositionAtDate(int assetId, DateTime date) async {

@@ -1,6 +1,8 @@
 import 'package:finance_app/core/di/service_locator.dart';
 import 'package:finance_app/core/widgets/base_feature_view.dart';
 import 'package:finance_app/features/expenses/presentation/viewmodels/expenses_viewmodel.dart';
+import 'package:finance_app/features/expenses/presentation/widgets/expense_summary_card.dart';
+import 'package:finance_app/features/expenses/presentation/widgets/expense_pie_chart.dart';
 import 'package:flutter/material.dart';
 
 class ExpensesView extends BaseFeatureView<ExpensesViewModel> {
@@ -14,6 +16,33 @@ class ExpensesView extends BaseFeatureView<ExpensesViewModel> {
 
   @override
   Widget buildContent(BuildContext context, ExpensesViewModel viewModel) {
+    // Show dashboard with data
+    if (viewModel.monthlyData != null && viewModel.categorySummaries.isNotEmpty) {
+      return RefreshIndicator(
+        onRefresh: viewModel.refresh,
+        child: Column(
+          children: [
+            // Summary Card
+            ExpenseSummaryCard(
+              totalExpenses: viewModel.monthlyData!.totalExpenses,
+              month: viewModel.monthlyData!.month,
+            ),
+            // Pie Chart
+            Expanded(
+              child: ExpensePieChart(
+                categorySummaries: viewModel.categorySummaries,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Fallback empty state when no data available
+    return _buildEmptyState(context);
+  }
+
+  Widget _buildEmptyState(BuildContext context) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -25,7 +54,7 @@ class ExpensesView extends BaseFeatureView<ExpensesViewModel> {
           ),
           const SizedBox(height: 16),
           Text(
-            'Expenses',
+            'No Expenses',
             style: Theme.of(context).textTheme.headlineMedium,
           ),
           const SizedBox(height: 8),

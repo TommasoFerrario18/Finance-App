@@ -16,7 +16,6 @@ class AddInvestmentView extends StatelessWidget {
       child: Consumer<AddInvestmentViewModel>(
         builder: (context, viewModel, child) {
           return FeatureScaffold(
-            title: 'Management',
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -43,11 +42,13 @@ class AddInvestmentView extends StatelessWidget {
                   const SizedBox(height: 24),
 
                   // 2. Dynamic Form based on Mode
-                  AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    child: viewModel.currentMode == InvestmentMode.newAsset
-                        ? const NewAssetForm()
-                        : const UpdatePerformanceForm(),
+                  Expanded(
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      child: viewModel.currentMode == InvestmentMode.newAsset
+                          ? const NewAssetForm()
+                          : const UpdatePerformanceForm(),
+                    ),
                   ),
 
                   // 3. Global Action Button
